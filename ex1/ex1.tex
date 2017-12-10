@@ -1,0 +1,254 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{verbose,letterpaper,tmargin=24mm,bmargin=24mm,lmargin=24mm,rmargin=24mm}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,hobby,backgrounds,fit,positioning}
+\usepackage[thmmarks]{ntheorem}
+\usepackage{amssymb}
+\usepackage{caption,graphicx,newfloat}
+\usepackage[justification=centering]{caption}% or e.g. [format=hang]
+\usepackage[linesnumbered]{algorithm2e}
+
+\DeclareCaptionType{InfoBox}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{claim}{Claim}[theorem]
+\newtheorem*{notice}{Notice}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{definition}{Definition}
+
+\makeatletter
+\newtheoremstyle{nonumberplainnobrackets}%
+  {\item[\theorem@headerfont\hskip\labelsep ##1\theorem@separator]}%
+  {\item[\theorem@headerfont\hskip \labelsep ##1\ ##3\theorem@separator]}
+\makeatother
+
+\theoremstyle{nonumberplainnobrackets}
+\theoremsymbol{\ensuremath{\Box}}
+\newtheorem{proof}{Proof}
+
+\theoremsymbol{\ensuremath{\blacksquare}} 
+\newtheorem{claimproof}{Proof of claim}
+\newtheorem{lemmaproof}{Proof of lemma}
+
+
+
+\usepackage{hyperref,amsmath}
+\usepackage {tikz}
+\usetikzlibrary {positioning,automata,arrows}
+\usepackage{caption}
+\definecolor {processblue}{cmyk}{0.96,0,0,0}
+%opening
+\title{Complexity - Exercise 1}
+\author{Oren Roth}
+\date{\today}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+\pgfdeclareshape{item}{
+	\savedanchor\northeast{\squarecorner{}}
+	\savedanchor\southwest{\squarecorner{-}}
+	
+	\foreach \x in {east,west} \foreach \y in {north,mid,base,south} {
+		\inheritanchor[from=rectangle]{\y\space\x}
+	}
+	\foreach \x in {east,west,north,mid,base,south,center,text} {
+		\inheritanchor[from=rectangle]{\x}
+	}
+	\inheritanchorborder[from=rectangle]
+	\inheritbackgroundpath[from=rectangle]
+}
+
+\begin{document}
+
+\maketitle
+\section*{Question 1}
+ ($\Leftarrow$) Let $L^* \in NP-C \cap CO-NP$ and let us show $CO-NP=NP$.
+	\begin{claim}
+\begin{align*}
+L \in NP \Rightarrow \bar{L} \in NP
+\end{align*}
+\end{claim}
+\begin{claimproof}
+$L\in NP$ and $L^* \in NP-C$ so there a polynomial reduction function $f$ s.t.:
+\begin{align*}
+	L \le_p L^*
+\end{align*}
+Therefore:
+\begin{align*}
+x\in L \iff f(x)\in L^*
+\end{align*}
+By the definition of complement languages:
+\begin{align*}
+x\in \bar{L} \iff x\notin L \iff f(x)\notin L^* \iff f(x)\in  \bar{L^*}
+\end{align*}
+So we conclude that $f$ is a polynomial reduction for:
+\begin{align*}
+\bar{L} \le_p \bar{L^*}
+\end{align*}
+And we know $L^*\in CO-NP$ so $\bar{L^*} \in NP$ and thus $\bar{L}\in NP$ 
+\end{claimproof}
+After we showed the proof of the claim we will use it to show $CO-NP=NP$.
+Let $L\in NP$, by the claim:
+\begin{align*}
+\bar{L} \in NP \Rightarrow L \in CO-NP
+\end{align*}
+Let $L\in CO-NP$, so we know $\bar{L}\in NP$ and by the claim:
+\begin{align*}
+L \in NP
+\end{align*}
+We conclude $NP=CO-NP$.\\
+\\
+($\Rightarrow$) Let $NP=CO-NP$, we know $SAT\in NP-C$ so,
+\begin{align*}
+SAT \in NP \Rightarrow SAT \in CO-NP 
+\end{align*} 
+and we showed there is language in $NP-C \cap CO-NP$
+
+\section*{Question 2}
+\begin{enumerate}
+	\item 
+	Define:
+	\begin{align*}
+		Id: \Sigma^* \rightarrow \Sigma^*\\
+		\forall x\in \Sigma^*,\quad Id(x) = x
+	\end{align*}
+	Let $A\subseteq \Sigma^*$ then:
+	
+	\begin{align*}
+	x\in A \iff 
+	 Id(x) = x \in A
+	\end{align*}
+	And thus $Id$ is reduction from $A$ to $A$. Clearly $Id$ runs $O(1)$.
+	\item 
+It's false.\\
+	We know $L_{halt} \in NP-Hard\setminus NP$ so for any $L\in NP$:
+		\begin{align*}
+	L \le_p L_{halt}
+	\end{align*}
+	but it if:
+		\begin{align*}
+	L_{halt} \le_p L
+	\end{align*}
+	then $L_{halt} \in NP$ and contradiction. And hence,
+	\begin{align*}
+	L_{halt} \nleq_p L
+	\end{align*}
+	\item 
+	It's false.\\
+	$SAT,SAT-3\in NP-Complete$ and thus:
+	\begin{align*}
+		SAT \le_p SAT-3\\
+				SAT-3 \le_p SAT
+	\end{align*}
+	But $SAT \ne SAT-3$.
+	\item Let $A \le_p B$ by function $f$, hence:
+	\begin{align*}
+	x\in A \iff f(x)\in B
+	\end{align*}
+	By the definition of complement languages:
+	\begin{align*}
+	x\in \bar{A} \iff x\notin A \iff f(x)\notin B \iff f(x)\in  \bar{B}
+	\end{align*}
+	So we conclude that $f$ is a polynomial reduction for:
+	\begin{align*}
+	\bar{A} \le_p \bar{B}
+	\end{align*}
+\end{enumerate}
+
+\section*{Question 3}
+\begin{claim}
+	For any $\phi = (x_1 \vee x_2 \vee \ldots \vee x_k)$ with $k\ge 4$ there is CNF $\phi'$ with 2 clauses in length smaller than $k$ each, defined over $x_1,\ldots x_k$ and $y$(new variable). With the following property:
+	\begin{align*}
+	\phi(X) = true \iff \exists y\;s.t\;\phi'(X,y) = true
+	\end{align*}
+\end{claim}
+\begin{claimproof}
+	Let $\phi = (x_1 \vee x_2 \vee \ldots \vee x_k)$ with $k\ge 4$, we define:
+	\begin{align*}
+	\phi' = (x_1 \vee x_2 \vee \ldots \vee x_{k-2} \vee y) \wedge (x_{k-1} \vee x_k  \vee \neg y)
+	\end{align*}	
+If there is $X$ assignment for $x_1,\ldots,x_k$ s.t. $\phi(X)= true$, if one of $x_{k-1},x_k$ got true we set $y=true$ and $\phi'(X,y) = true$ (the first clause is true due to $y$ and the second due to  $x_{k-1},x_k$). And otherwise if both $x_{k-1},x_k$ are not true it has to be the case that one of $x_1,\ldots x_{k-2}$ literals got true and setting $y=false$ gain $\phi'(X,y) = true$.
+On the other hand if $\phi'(X,y) = true$ for some $y$, if $y=true$ than it has to be the case than one of  $x_{k-1},x_k$ are true and thus  $\phi(X)=true$ and else if $y=false$  it has to be the case than one of  $x_1,\ldots x_{k-2}$ literals got true and still $\phi(X)=true$.
+\end{claimproof}
+\begin{claim}
+	For any $\phi=\bigwedge_{i=1}^n C_i$, an CNF for $SAT$ there is CNF $\phi'=\bigwedge_{i=1}^m C'_i$ for $3-SAT$ with $poly(n)$ clauses on the same variables. $\phi,\phi'$ will agree between them. Moreover $\phi'$ can be build from $\phi$ in polynomial time.
+\end{claim}
+\begin{claimproof}
+	Let $\phi = \bigwedge_{i=1}^n C_i$, an CNF for $SAT$, define $k = max\{|C_i|\}$ we will show by induction on $k$ that we can create $\phi'$.\\
+	\textbf{Basis:}
+	\begin{enumerate}
+		\item \textbf{k=1:} instead of $C_i= x_1$ we will create:
+		\begin{align*}
+			C_i' = (x_1 \vee y_i \vee z_i) \wedge  (x_1 \vee \neg y_i \vee z_i) \wedge  (x_1 \vee  y_i \vee \neg z_i) \wedge  (x_1 \vee \neg y_i \vee \neg z_i) 
+		\end{align*}
+		With two new variables ($y_i,z_i$), and no matter what is the assignment of $y_i,z_i$ it will be one clause in $C_i'$ that $x_1$ will need to have true. On the other side if $x_1$ is true than all the clauses in $C_i'$ are true.
+		\item \textbf{k=2:} Clauses of length 1 we will handle as before, otherwise, instead of $C_i= (x_1\vee x_2) $ we will create:
+			\begin{align*}
+		C_i' = (x_1 \vee x_2 \vee y_i) \wedge  (x_1 \vee x_2 \vee \neg y_i) 
+		\end{align*}
+		With new variables ($y_i$), again no matter what is the assignment of $y_i$ it will be one clause in $C_i'$ that $x_1,x_2$ will need to have true. On the other side if $x_1,x_2$ is true than all the clauses in $C_i'$ are true.
+		\item \textbf{k=3:} Clauses of length $<$ 3 we will handle as before, otherwise, we will keep $C_i' = C_i$ as it has 3 literals in each clause.	
+	\end{enumerate}
+Assume that for any $k$ with $k < n$ we can define $\phi'$ and let be $\phi$ with $k = max\{|C_i|\}=n\ge4$.  For any $C_i$ with length $n$ by the previous lemma we know we can create two clauses with length $n-1$ that has the same truth values and know we have new formula with all clauses of length  $<n$ and by the assumption we can handle those.\\
+Notice that for each clause with $m$ literals we create at most $m$ new clauses, and so this process is polynomial in $n$.
+\end{claimproof}
+It's clear $3-SAT\in NP$ as given $\phi$ an assignment for $\phi$ can be the proof for showing whereas $\phi \in 3-SAT$ (As there is a valid assignment for $\phi$ iff $\phi \in 3-SAT$).  To show $3-SAT\in NP-hard$ we will just show polynomial reduction between $SAT$ to $3-SAT$, because $SAT\in NP-Complete$ it will admit immediately that $3-SAT\in NP-hard$.\\
+Given, $\phi=\bigwedge_{i=1}^n C_i$, an CNF for $SAT$ we will build in polynomial time $\phi'$ for $3-SAT$ by the lemma, and we got $\phi \in SAT \iff \phi' \in 3-SAT$.
+
+\section*{Question 4}
+We will use an array $Arr$ with size $m$.\\
+
+$H(m):$\\
+\begin{algorithm}[H]
+	
+	Arr[1] $\leftarrow$ 1\\
+	\For{M=2 to m}{
+		i=1\\
+		\eIf{i $<$ loglog(m)}{ 
+			\For{$x \in \{0,1\}^{log(M)}$}{
+				run $M_i(x)$ for $i|x|^i$ steps and put the result in $res1$ 
+				(e.g $res1 = true$ iff $M_i(x)$ stop and accept after at most $i|x|^i$ steps)\\
+				$l \leftarrow$ the index of the rightmost '0' in $x$\\
+				$x_{start} \leftarrow x[0,l]$\\
+				$x_{end} \leftarrow x[l+1,|x|]$\\
+				\If{$|x_{end}|\ne |x_{start}|^{Arr[|x_{start}|]}$}{
+					$res2  \leftarrow$ false
+					}
+				\ElseIf{$x_{start}$ is not CNF clause}{
+					$res2  \leftarrow$ false
+				}
+				\Else{
+					brute force to find satisfing assignment for $x_{start}$ and set $res2 = true$ iff one found.
+				}
+				\If{$res1 \ne res2$}{
+					$i\leftarrow i +1$\\
+					goto 4
+				}
+			}
+			Arr[M] $\leftarrow$ i
+		}{
+		Arr[M] $\leftarrow$ loglog(M)
+		}
+	}
+	\Return Arr[m]
+\end{algorithm}
+\subsection*{Explanation for the run time:}
+\begin{itemize}
+\item The loop in line 2 runs in linear time in $m$.
+\item We go back to line 4 at most $loglog(m)$ times.
+\item The loop in line 5 runs at most $2^{log(M)}<2^{log(m)} = m$ times.
+\item Line 6 runs in $i|x|^i < loglog(m)log(m)^{loglog(m)}=O(m)$ steps*.
+\item Line 7-12 run in polynomial time in $x$ which is polynomial in $m$. 
+\item The CNF clause in Line 13  has at most $|x| = log(M) < log(m)$ variables and thus need to check at most $2^{log(m)} = m$ assignments.
+\end{itemize}
+[*] \includegraphics[scale=.6]{screenshot001}\\ \\
+\textbf{Summary} - Each of the lines run in polynomial time in $m$, and because polynom of polynom is still polynom also finite set of cascading loops are still polynom in $m$.
+\end{document}

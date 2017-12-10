@@ -1,0 +1,117 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{verbose,letterpaper,tmargin=24mm,bmargin=24mm,lmargin=24mm,rmargin=24mm}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,hobby,backgrounds,fit,positioning}
+\usepackage[thmmarks]{ntheorem}
+\usepackage{amssymb}
+\usepackage{caption,graphicx,newfloat}
+\usepackage[justification=centering]{caption}% or e.g. [format=hang]
+\usepackage[linesnumbered]{algorithm2e}
+
+\DeclareCaptionType{InfoBox}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{claim}{Claim}[theorem]
+\newtheorem*{notice}{Notice}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{definition}{Definition}
+
+\makeatletter
+\newtheoremstyle{nonumberplainnobrackets}%
+  {\item[\theorem@headerfont\hskip\labelsep ##1\theorem@separator]}%
+  {\item[\theorem@headerfont\hskip \labelsep ##1\ ##3\theorem@separator]}
+\makeatother
+
+\theoremstyle{nonumberplainnobrackets}
+\theoremsymbol{\ensuremath{\Box}}
+\newtheorem{proof}{Proof}
+
+\theoremsymbol{\ensuremath{\blacksquare}} 
+\newtheorem{claimproof}{Proof of claim}
+\newtheorem{lemmaproof}{Proof of lemma}
+
+
+
+\usepackage{hyperref,amsmath}
+\usepackage {tikz}
+\usetikzlibrary {positioning,automata,arrows}
+\usepackage{caption}
+\definecolor {processblue}{cmyk}{0.96,0,0,0}
+%opening
+\title{Complexity - Exercise 2}
+\author{Oren Roth}
+\date{\today}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+\pgfdeclareshape{item}{
+	\savedanchor\northeast{\squarecorner{}}
+	\savedanchor\southwest{\squarecorner{-}}
+	
+	\foreach \x in {east,west} \foreach \y in {north,mid,base,south} {
+		\inheritanchor[from=rectangle]{\y\space\x}
+	}
+	\foreach \x in {east,west,north,mid,base,south,center,text} {
+		\inheritanchor[from=rectangle]{\x}
+	}
+	\inheritanchorborder[from=rectangle]
+	\inheritbackgroundpath[from=rectangle]
+}
+
+\begin{document}
+
+\maketitle
+\section*{Question 1}
+ Let $M$ be the TM which decide $A$ and $p(n)$ a polynomial, which for any input with size $n$, $M$ runs at most $p(n)$ steps with oracle access to inputs with length at most $n-1$.
+ We will describe $M'$ that will use only $n*p(n)$ space for any input of size $n$ and decide $A$. This will show $A\in PSPACE$.\\
+Given $x\in \Sigma^*$, $M'$ will save $n$ slots with size $p(n)$ each. $M'$ runs as follows:
+
+\begin{itemize}
+	\item Copy $x$ to the first slot
+	\item run $M$ on the input in slot 1. When oracle request is asked copy the input for the oracle to the next slot and runs $M$ on it. 
+	\item Continue the same process when oracle request is asked copy the input for the oracle to the next slot and runs $M$ on it and so on. 
+	\item When $M$ answer on input of slot $i>1$, clear slot $i$ and return the answer to $M$ on slot $i-1$ that asked the question to the oracle and continue the run of $M$ on slot $i-1$.
+	\item When answer of $M$ appears on slot 1, $M'$ return the same.
+\end{itemize}
+First notice that any calls for oracle is shrink the input by one, so we will use at most $n$ slots, because each slot is with size $p(n)$, $M'$ uses $poly(n)$ space. Moreover as $M$ need $p(n)$ time for an input in size $n$, it for sure use at most $p(n)$ space for inputs in size $\le n$, in each slot we run on inputs with size $\le$ to $n$ and hence each slot as sufficient space for running $M$.\\  
+If all the calls for the oracle are correct $M'$ is just simulating $M$ on slot 1 and hence $L(M')=L(M)$. 
+Assume that all the calls for the oracle in input $y$ with $|y|<k$ are simulating correctly by $M'$ and let $y$ be input for the oracle with $|y|=k$, for this we will open new slot and run $M$ on $y$, with every oracle call on inputs in size at most $k-1$ which by the induction assumption we know $M'$ simulate correctly and hence, $M'$ on $y$ will answer exactly as $M$ on $y$.
+\section*{Question 2}
+Assume $NP=CO-NP$, we will show $PH\subseteq NP$ and hence $PH=NP$.\\
+\begin{align*}
+PH = \bigcup_{i=0}^\infty \Sigma_i^p
+\end{align*}
+We will show by induction on $i$ that $\Sigma_i^p\subseteq NP$
+
+\section*{Question 3}
+
+\section*{Question 4}
+\subsection*{a. }
+\subsection*{b. } $SAT$ is a special case of boolean formula, so as we showed in 1, iff $x\in SAT$ there is a witness for it, a interpretation for it $a$ with:  
+\begin{align*}
+(x,a)\in FVAL
+\end{align*}
+Because the witness tape is just like a normal tape we can run the algorithm from section a, and determine $x\in SAT$ iff $\exists a$ s.t. $ (x,a)\in FVAL$. 
+\subsection*{c. }
+\begin{claim}
+$G$ is not bipartite graph $\iff$ there is a cycle of odd length in $G$
+\end{claim}
+We will show that $BIPARTITE \in CO-NL$ and by theorem we showed in class ($NL=CO-NL$) we will conclude $BIPARTITE\in NL$. Let us show $\overline{BIPARTITE}\in NL$ by describe $M$ non deterministic TM which decide $\overline{BIPARTITE}$.\\
+$M$ will receive as an witness the odd cycle in $G$ (by our claim we know there exist iff $G\in \overline{BIPARTITE}$) and just check that this cycle exists in $G$.\\
+$M$ will accept $\iff$ there is such witness $\iff$ $G \in \overline{BIPARTITE}$.
+\begin{claimproof}
+($\Leftarrow$) Let $C = \{ v_1,v_2,\ldots,v_{2n+1} \}$ be a cycle of odd length, by contradiction assume $G=(V\cup E)$ is bipartite with $V=L\cup R$ division of $V$ to two disjoint sets as promised. WLOG assume $v_1\in L$ so $v_2\in R$, $v_3\in L$ and so on (there is edge between those vertices so they have to be in different sets), we conclude all the odd vertices are in $L$ but there is edge between $v_{2n+1}$ to $v_1$ and we arrive to contradiction.\\
+($\Rightarrow$) Let be 
+\end{claimproof}	
+\section*{Question 5}
+
+
+\end{document}
