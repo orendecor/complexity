@@ -89,8 +89,58 @@ Assume $NP=CO-NP$, we will show $PH\subseteq NP$ and hence $PH=NP$.\\
 \begin{align*}
 PH = \bigcup_{i=0}^\infty \Sigma_i^p
 \end{align*}
-We will show by induction on $i$ that $\Sigma_i^p\subseteq NP$
-
+We will show by induction on $i$ that $\Sigma_i^p\subseteq NP$.\\
+$i=0$,  $\Sigma_0^p= P\subseteq NP$.\\
+$i=1$,  $\Sigma_1^p= NP\subseteq NP$.\\
+Assume that for $i$, $2\le i<k$: 
+\begin{align*}
+\Sigma_i^p\subseteq NP
+\end{align*}
+We know $NP\subseteq \Sigma_i^p$ and hence $NP=\Sigma_i^p$.\\
+This makes $\Pi_i^p = CO-NP$, and because we know $NP=CO-NP$ we get $\Pi_i^p = \Sigma_i^p$.
+\\
+Let us show $\Sigma_k^p\subseteq NP$:
+\begin{align*}
+	&L \in \Sigma_k^p \iff \exists M\;polynomial\;TM\;s.t:\;\\
+	&x\in L \iff \exists y_1\forall y_2 \ldots Q_ky_k \;M(x,y_1,y_2,\ldots,y_k) = 1
+\end{align*}
+Let us define $L'$:
+\begin{align*}
+L'= \{ (x,y_1) :\forall y_2 \exists y_3 \ldots Q_ky_k \;M(x,y_1,y_2,\ldots,y_k) =1\}
+\end{align*}
+So we have:
+\begin{align}\label{LL'}
+x\in L \iff \exists y_1\forall y_2 \ldots Q_ky_k \;M(x,y_1,y_2,\ldots,y_k) = 1 \iff\\
+\forall y_2 \exists y_3 \ldots Q_ky_k \;M(x,y_1,y_2,\ldots,y_k) =1 \iff 
+(x,y_1)\in L'
+\end{align}
+By definition $L'\in \Pi_{k-1}^p$ but we showed for all indexes $i<k$ that $\Pi_i^p = \Sigma_i^p$, and so we conclude $\Pi_{k-1}^p =  \Sigma_{k-1}^p$, and:
+\begin{align*}
+L'\in \Sigma_{k-1}^p
+\end{align*}
+and hence there exists polynomial $M'$ s.t. 
+\begin{align*}
+(x,y_1) \in L' \iff \exists y_2  \forall  y_3\ldots Q_ky_k \;M'(x,y_1,y_2,\ldots,y_k) =1
+\end{align*}
+And moreover:
+\begin{align*}
+(x,y_1) \in L' \iff \exists y_2  \forall y_3\ldots Q_ky_k \;M'(x,y_1,y_2,\ldots,y_k) =1 \iff \\
+\exists y_1,y_2  \forall y_3\ldots Q_ky_k \;M'(x,y_1,y_2,\ldots,y_k) =1 
+\end{align*}
+Adding (\ref{LL'})  we conclude:
+\begin{align*}
+x\in L \iff \exists y_1 \; s.t.\; (x,y_1) \in L' \iff \\
+\exists y_1,y_2  \forall y_3\ldots Q_ky_k \;M'(x,y_1,y_2,\ldots,y_k) =1 
+\end{align*}
+And we got that $L\in \Sigma_{k-1}^p$, which by IA we know $\Sigma_{k-1}^p\subseteq NP$, and we derive our desire conclusion:
+\begin{align*}
+L\in NP \\
+\end{align*}
+And thus,
+\begin{align*}
+\Sigma_k^p \subseteq NP
+\end{align*}
+By induction we showed that for any $i\in \mathbb{N}$, $\Sigma_i^p\subseteq NP$ and this $PH\subseteq NP$, we know $NP\subseteq PH$, so we conclude: $PH= NP$.
 \section*{Question 3}
 
 \section*{Question 4}
