@@ -85,7 +85,7 @@ First notice that any calls for oracle is shrink the input by one, so we will us
 If all the calls for the oracle are correct $M'$ is just simulating $M$ on slot 1 and hence $L(M')=L(M)$. 
 Assume that all the calls for the oracle in input $y$ with $|y|<k$ are simulating correctly by $M'$ and let $y$ be input for the oracle with $|y|=k$, for this we will open new slot and run $M$ on $y$, with every oracle call on inputs in size at most $k-1$ which by the induction assumption we know $M'$ simulate correctly and hence, $M'$ on $y$ will answer exactly as $M$ on $y$.
 \section*{Question 2}
-Assume $NP=CO-NP$, we will show $PH\subseteq NP$ and hence $PH=NP$.\\
+We will assume $CO-NP\subseteq NP$, and derive $PH\subseteq NP$ and hence $PH=NP$.\\
 \begin{align*}
 PH = \bigcup_{i=0}^\infty \Sigma_i^p
 \end{align*}
@@ -97,7 +97,7 @@ Assume that for $i$, $2\le i<k$:
 \Sigma_i^p\subseteq NP
 \end{align*}
 We know $NP\subseteq \Sigma_i^p$ and hence $NP=\Sigma_i^p$.\\
-This makes $\Pi_i^p = CO-NP$, and because we know $NP=CO-NP$ we get $\Pi_i^p = \Sigma_i^p$.
+This makes $\Pi_i^p = CO-NP$, and because we know $CO-NP\subseteq NP$ we get $\Pi_i^p \subseteq \Sigma_i^p$.
 \\
 Let us show $\Sigma_k^p\subseteq NP$:
 \begin{align*}
@@ -114,7 +114,7 @@ x\in L \iff \exists y_1\forall y_2 \ldots Q_ky_k \;M(x,y_1,y_2,\ldots,y_k) = 1 \
 \forall y_2 \exists y_3 \ldots Q_ky_k \;M(x,y_1,y_2,\ldots,y_k) =1 \iff 
 (x,y_1)\in L'
 \end{align}
-By definition $L'\in \Pi_{k-1}^p$ but we showed for all indexes $i<k$ that $\Pi_i^p = \Sigma_i^p$, and so we conclude $\Pi_{k-1}^p =  \Sigma_{k-1}^p$, and:
+By definition $L'\in \Pi_{k-1}^p$ but we showed for all indexes $i<k$ that $\Pi_i^p \subseteq \Sigma_i^p$, and so we conclude $\Pi_{k-1}^p \subseteq  \Sigma_{k-1}^p$, and:
 \begin{align*}
 L'\in \Sigma_{k-1}^p
 \end{align*}
@@ -127,7 +127,7 @@ And moreover:
 (x,y_1) \in L' \iff \exists y_2  \forall y_3\ldots Q_ky_k \;M'(x,y_1,y_2,\ldots,y_k) =1 \iff \\
 \exists y_1,y_2  \forall y_3\ldots Q_ky_k \;M'(x,y_1,y_2,\ldots,y_k) =1 
 \end{align*}
-Adding (\ref{LL'})  we conclude:
+Adding with the inequality in (\ref{LL'})  we conclude:
 \begin{align*}
 x\in L \iff \exists y_1 \; s.t.\; (x,y_1) \in L' \iff \\
 \exists y_1,y_2  \forall y_3\ldots Q_ky_k \;M'(x,y_1,y_2,\ldots,y_k) =1 
@@ -140,9 +140,22 @@ And thus,
 \begin{align*}
 \Sigma_k^p \subseteq NP
 \end{align*}
-By induction we showed that for any $i\in \mathbb{N}$, $\Sigma_i^p\subseteq NP$ and this $PH\subseteq NP$, we know $NP\subseteq PH$, so we conclude: $PH= NP$.
+By induction we showed that for any $i\in \mathbb{N}$, $\Sigma_i^p\subseteq NP$ and thus $PH\subseteq NP$, we know $NP\subseteq PH$, so we conclude: $PH= NP$.
 \section*{Question 3}
-
+\subsection*{a. }
+Assume $DP\subseteq NP$, for any $L\in CO-NP$, if we will look at: \begin{align*}
+	L\cap \Sigma^* = L
+\end{align*}
+Because $\Sigma^*\in P \subseteq NP$ we got $L\in DP$. So we showed that also:\
+\begin{align*}
+CO-NP \subseteq DP
+\end{align*}
+Together with our assumption we got:
+\begin{align*}
+CO-NP \subseteq DP \subseteq NP
+\end{align*}
+And we already showed in Q.2 that $CO-NP \subseteq NP$ is concluding to $PH=NP$.
+\subsection*{b. }
 \section*{Question 4}
 \subsection*{a. }
 \subsection*{b. } $SAT$ is a special case of boolean formula, so as we showed in 1, iff $x\in SAT$ there is a witness for it, a interpretation for it $a$ with:  
@@ -162,6 +175,37 @@ $M$ will accept $\iff$ there is such witness $\iff$ $G \in \overline{BIPARTITE}$
 ($\Rightarrow$) Let be 
 \end{claimproof}	
 \section*{Question 5}
+\subsection*{a. }
+Let be $f$ a one-directional function, and we will show $P=NP$.\\
+Let $M_f$ be the polynomial TM which compute $f$.\\
+Let us define TM $M(y,x)$, 
+\begin{itemize}
+\item given $(y,x)$
+\item $M$ runs $M_f(x)$ and get $y'$
+\item $M$ accepts iff $y'=y$
+\end{itemize}
+So $M$ is polynomial. We will define now $L'$:
+\begin{align*}
+L' = \{ (y,x,1^n) : \exists z \;s.t\quad M(y,x\cdot z)=1 \wedge |x\cdot z| =n \}
+\end{align*}
+We will show $L'\in NP\setminus P$:
+\begin{itemize}
+	\item $L'\in NP$: We will show a non deterministic TM $M'$ which will decide $L'$. Given $(y,x,1^n)$, $M'$ will will guess $z\in \{0,1\}^{n-|x|}$ and run $M(y,x\cdot z)$ and answer the same. We will have:
+	\begin{align*}
+	(y,x,1^n) \in L' \iff \exists z \;s.t\quad M(y,x\cdot z)=1 \wedge |x\cdot z| =n \iff \\ there \; exists\;accepting\; computation\; for\;M'
+	\end{align*}
+	\item $L'\notin P$: Otherwise by contradiction $L'\in P$, there exists TM $M_p$ s.t 
+	\begin{align*}
+	(y,x,1^n) \in L' \iff  M_p(y,x,1^n)=1 \iff  \exists z \;s.t\quad M(y,x\cdot z)=1 \wedge |x\cdot z| =n 
+	\end{align*}
+	So we can build the following algorithm $\mathcal{A}$ which reverse $f$, like that, given $y$ and $1^{|x|}$, $\mathcal{A}$ will set the first bit of $x$ to 1 if the run of $M_p(y,1,1^{|x|})$ accepts, and 0 otherwise. Continue by running $M_p(y,x_11,1^{|x|})$ to determine the second bit of $x$ and after total $|x|$ runs of $M_p$ we will find $x$, and hence $\mathcal{A}$ is polynomial in $(y,1^{|x|})$. We got:
+		\begin{align*}
+	\Pr_{x^R\in\{0,1\}^*,f(x)=y} [ \mathcal{A}(y)=x' \quad s.t.\quad f(x')=y]=1 >\frac{1}{n}\\
+	\end{align*}
+	for all $n>1$, and contradiction that $f$ is one-directional function.
+\end{itemize}
 
 
+
+\subsection*{b. }
 \end{document}
