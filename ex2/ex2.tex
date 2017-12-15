@@ -7,7 +7,14 @@
 \usepackage{amssymb}
 \usepackage{caption,graphicx,newfloat}
 \usepackage[justification=centering]{caption}% or e.g. [format=hang]
-\usepackage[linesnumbered]{algorithm2e}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
 
 \DeclareCaptionType{InfoBox}
 
@@ -156,8 +163,108 @@ CO-NP \subseteq DP \subseteq NP
 \end{align*}
 And we already showed in Q.2 that $CO-NP \subseteq NP$ is concluding to $PH=NP$.
 \subsection*{b. }
+\newpage
 \section*{Question 4}
 \subsection*{a. }
+We will show algorithm that uses only logarithmic space and will decide $FVAL$. Given $(F,a)$, for any literal in $F$ we refer in our algorithm $a(n)\in \{T,F\}$ as the substition of $a$ on that literal, notice that this can be checked with $O(1)$ space. In our algorithm we will think of $F$ as a binary tree, and use the fact that we can decide for any node $n$ in tree $F$ which direct subtree of $n$ is bigger in logarithmic space. This can be calling the following sub routine twice once where $n$ is the left subtree and after setting $n$ to be the right subtree.\\
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\Procedure{CheckSize}{}
+		\State $counter \gets 0$
+		\State $level \gets 0$
+		\State $cameFrom \gets \emptyset$
+		\BState \emph{loop}:
+		\If {$n \text{ is litreal} $ \textbf{or} $cameFrom = 'right'$} 
+			\State $counter \gets counter +1$
+			\If {$level = 0$} 
+			\State \textbf{return} counter
+			\Else
+			\State $level \gets level-1$
+			\If{$n \text{ is a right node}$}
+			\State	$cameFrom \gets  'right'$
+			\Else
+			\State	$cameFrom \gets  'left'$
+			\EndIf
+			\State $n \gets  n.parent$
+			\State 	\textbf{goto} loop
+			\EndIf
+		\ElsIf {$cameFrom = 'left'$}
+			\State $level \gets level+1$
+			 \State $n \gets  n.rightnode$
+			 \State $cameFrom \gets \emptyset$
+			 \State 	\textbf{goto} loop
+		\ElsIf {$cameFrom = \emptyset$}
+		\State $level \gets level+1$
+		\State $n \gets  n.leftnode$
+		\State 	\textbf{goto} loop
+		
+		\EndIf
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+Than we will compare between those counters and decide which subtree is bigger. We used here 4 variables which at most need $log(N)$ space where $N$ is number of nodes in tree which is $O(n)$. We used here and in our algorithm the notation $n$ for variable for node, we can think of $n$ denote the subtree we are looking now as two pointers that mark the position in $F$, remark that each pointer doesn't need more than $log(n)$ space. We can update $n\leftarrow n.parent$ by just update the pointers to the outside parentheses. \\
+Now we are ready to present the algorithm that will decide $FVAL$, this algorithm will basically will valuate the tree $F$ from down to up traversing through the bigger subtree in each step:
+\begin{algorithm}
+	\caption{FVAL(F,a)}\label{euclid}
+	\begin{algorithmic}[1]
+		\State $ans,cameFrom,S \gets \emptyset$
+		\State $i,level \gets 0$
+		\State $n \gets \text{root of F}$
+		\BState \emph{loop}:
+		\If {$n \text{ is litreal} $} 
+			\State $ans \gets a[n]$
+			\BState \emph{levelup}:
+			\If {$level = 0$}  \textbf{return} $ans$
+			\ElsIf {$n \text{ is a right node}$}
+				\State	$cameFrom \gets  'right'$
+			\Else
+				\State	$cameFrom \gets  'left'$
+			\EndIf
+			\State $n \gets  n.parent$
+			\State 	\textbf{goto} loop
+		\ElsIf {$ans = \emptyset$}
+			\If {$(CheckSize(n.rightnode) > CheckSize(n.leftnode) )$} $n \gets n.rightnode$
+			\Else $ \quad n \gets   n.leftnode$
+			\EndIf
+			\State $level \gets level+1$
+			\If {$S[i] \ne null $} $i \gets i+1$
+			\EndIf
+			\State 	\textbf{goto} loop
+		\ElsIf {$S[i] = null $}
+			\State $S[i] \gets ans$
+			\State $ans \gets  \emptyset$
+			\If {$cameFrom = 'right'$}
+				\State $n \gets  n.leftnode$
+			\Else
+				\State $n \gets  n.rightnode$
+			
+			\EndIf
+			\State $cameFrom \gets \emptyset$
+			\State 	\textbf{goto} loop
+		\Else
+			\If {n is from the $F_1\wedge F_2$ format} 
+				\State $ans \gets min\{ ans, S[i] \}$
+			\Else 
+				\State $ans \gets max\{ ans, S[i] \}$
+			\EndIf
+			\State $S[i] \gets null $
+			\State $level \gets level-1$
+			\If {$i>level$} $i \gets level$
+			\EndIf
+			\State 	\textbf{goto} levelup
+		\EndIf
+	\end{algorithmic}
+\end{algorithm}
+
+\newpage
+$ans,cameFrom$ takes only $O(1)$ space, $i,level$ are representing a number which is big at most as $n$, so we need only $O(log(n))$ space to save them. For $n$ we already explained previously how can we managed it with only $O(log(n))$ bits. So the only thing we need to ensure is that the array $S$ is not taking more than $O(log(n))$ space:
+\begin{lemma} through all the run of the algorithm $S$ use bits at most as the depth of the biggest full subtree of $F$ +1 .
+\end{lemma}
+By the lemma we conclude $S$ is using at most $log(n)$ bits, as the size of the biggest full subtree of $F$ is smaller than $n$ and it's depth is $log(n)$.
+\\
+\\ \textbf{Proof of lemma} by induction on the size of the subtree the algorithm check in the $loop$. If subtree is in size of one (literal) we don't use $S$. Assume that for any subtree $F'$ we checked in $loop$ of size $k,k <n$ the if $F'$ was full subtree then $S$ grew at most to the size of $F'$'s height and otherwise it grew to size of the biggest full subtree of $F'$ +1 . Let be $F'$ be a subtree of size $n$. If $F'$ is full tree with length $l$, so the calculation on it's left subtree (which is also full subtree) will take at most $l-1$ bits in $S$ (by induction assumption), after we go back to $F'$ and before checking the right subtree, $S$ will shrink to only one value. Then we will use additional at most $l-1$ bits for the right subtree of $F'$, by the induction assumption, with total of $l$ bits. Otherwise $F'$ is not a full tree denote by $l$ the height of the biggest full subtree of $F'$.
+To calculate the first subtree of $F'$ by IA we will at most $l+1$ bits in $S$, but after coming back to $F'$, $S'$ will shrink back to size 1. It could not be the case that the biggest full subtree of $F'$ is direct child of it in the second subtree calculation, as we scan $F'$ first by the biggest child and this will lead to the fact that $F'$ is full by it own, which is not the case we are in. Therefore to calculate the second subtree we will need, by IA, $l+1$ which will shrink to size two after coming back to second subtree of $F'$ (one saved for the first subtree and the second bit for the second subtree). Then we will go back to $F'$ and finish.
 \subsection*{b. } $SAT$ is a special case of boolean formula, so as we showed in 1, iff $x\in SAT$ there is a witness for it, a interpretation for it $a$ with:  
 \begin{align*}
 (x,a)\in FVAL
