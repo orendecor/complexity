@@ -307,12 +307,20 @@ We will show $L'\in NP\setminus P$:
 	\end{align*}
 	So we can build the following algorithm $\mathcal{A}$ which reverse $f$, like that, given $y$ and $1^{|x|}$, $\mathcal{A}$ will set the first bit of $x$ to 1 if the run of $M_p(y,1,1^{|x|})$ accepts, and 0 otherwise. Continue by running $M_p(y,x_11,1^{|x|})$ to determine the second bit of $x$ and after total $|x|$ runs of $M_p$ we will find $x$, and hence $\mathcal{A}$ is polynomial in $(y,1^{|x|})$. We got:
 		\begin{align*}
-	\Pr_{x^R\in\{0,1\}^*,f(x)=y} [ \mathcal{A}(y)=x' \quad s.t.\quad f(x')=y]=1 >\frac{1}{n}\\
+	\Pr_{x^R\in\{0,1\}^*,f(x)=y} [ \mathcal{A}(y)=x' \quad s.t.\quad f(x')=y]=1 >\frac{1}{n}
 	\end{align*}
 	for all $n>1$, and contradiction that $f$ is one-directional function.
 \end{itemize}
 
 
 
-\subsection*{b. }
+\subsection*{b. } Assume $F$ is running in $n^c$, $c>2$, for input in size $n$, we will define new function $F'$ which will run in time $n^2$. Given $x$, $F'$ will run $F$ on the first $|x|^{\frac{2}{c}}$ bits of $x$ (deleting all the bits after those first bits) and return. Clearly the run time of $F'$ is ${n^{\frac{2}{c}}}^c = n^2$. If by contradiction $F'$ is not one-directional, there is algorithm $\mathcal{A}$ s.t. 
+	\begin{align}\label{pr}
+\Pr_{x^R\in\{0,1\}^*,f(x)=y} [ \mathcal{A}(y)=x' \quad s.t.\quad F'(x')=y]>\epsilon(n) 
+\end{align}
+For any negligible function $\epsilon(n)$. So we can describe new algorithm $\mathcal{A}'$ which will contradict the face $F$ is one-directional. Given $(y, 1^{|x|})$, for some $x\in \{0,1\}^*$ which $F(x)=y$, $\mathcal{A}'$ will run $\mathcal{A}$ on $(y,1^{|x|^{\frac{c}{2}}}) $ which will return $x'$ s.t $F'(x') = y$ with high probability [as described in \ref{pr}], $\mathcal{A}'$ return the first $|x'|^{\frac{2}{c}}$ of $x'$, denote the output by $x''$, the size of output will be:
+\begin{align*}
+|x''| = |x'| ^ {\frac{2}{c}} = {|x|^{\frac{c}{2}}}^{\frac{2}{c}} = |x|
+\end{align*}
+By the definition of $F'$, $x''$, the first $|x'|^{\frac{2}{c}}$ bits of $x'$, are fulfilling $F(x'') = y$, and we arrive to contradiction that $F$ is one directional.
 \end{document}
