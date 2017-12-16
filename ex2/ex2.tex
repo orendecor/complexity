@@ -162,7 +162,54 @@ Together with our assumption we got:
 CO-NP \subseteq DP \subseteq NP
 \end{align*}
 And we already showed in Q.2 that $CO-NP \subseteq NP$ is concluding to $PH=NP$.
-\subsection*{b. }
+\subsection*{b. } Given $L\in DP$ I will show how to reduce it in polynomial time to $EC$ (Exact -Clique). I will use the known fact $CLIQUE\in NP-Complete$, where:
+\begin{align*}
+CLIQUE = \{ <G,k> : \text{there exists clique in } G \text{ of size } k \}
+\end{align*}
+From this fact we know that $\overline{CLIQUE}\in CO-NP-Complete$.
+Given $L\in DP$, we know:
+\begin{align*}
+L = L_1\cap L_2\quad  where:\\
+L_1\in NP\quad L_2\in CO-NP
+\end{align*}
+And because $CLIQUE\in NP-Complete$ and $\overline{CLIQUE}\in CO-NP-Complete$, there those reductions:
+\begin{align*}
+L_1 \le_p CLIQUE \\
+L_2 \le_p \overline{CLIQUE}
+\end{align*}
+So there exists two polynomial reduction function $f_1,f_2$ s.t.:
+\begin{align*}
+x\in L_1 \iff f_1(x)=<G_1,k_1> \in CLIQUE \\
+x \in L_2 \iff f_2(x)=<G_2,k_2> \in \overline{CLIQUE}
+\end{align*}
+\textbf{Notice: } WLOG we can assume that $k_1 \ne k_2$ as if it's not the case there $f'_1$ which will just add another node to $G_1$, the output of $f_1(x)$ and connect it to all the nodes, and set $k'_1 = k_1 +1$. $f'_1$ will be also a reduction function with the same properties and will have $k'_1 \ne k_2$.\\ \\
+Recall that the standard reduction construction from $3-SAT$ to $CLIQUE$ are having that if there is a clique in size $k_i$ this is the biggest clique. (As $k_i$ is the biggest size of clique possible, if by contradiction there exists a clique of size bigger than $k_i$ it will lead by the pigeonhole principle to two nodes from the same clause connected together). So we can adjust the previous equalities:
+\begin{align*}
+&x\in L_1 \iff f_1(x)=<G_1,k_1> \text{and the biggest clique in }G_1\text{ is in size }k_1. \\
+&x \in L_2 \iff f_2(x)=<G_2,k_2> \text{and the biggest clique in } G_2 \text{ is in size smaller than } k_2
+\end{align*}
+We will set new reduction function $f'_i$ ($i\in \{1,2 \}$) on input $x$, $f'_i$ will run $f_i(x)$ and receive $<G_i,k_i>$ it will add $K_{{k_i}-1}$ to $G_i$ denote it by $G'_i$ and return $<G'_i,k_i>$, where $K_j$ is a clique in size $j$. Now we will have those properties: 
+\begin{align*}
+&x\in L_1 \Rightarrow  f'_1(x)=<G'_1,k_1> \text{and the biggest clique in }G'_1\text{ is in size }k_1\\
+&x\notin L_1 \Rightarrow  f'_1(x)=<G'_1,k_1> \text{and the biggest clique in }G'_1\text{ is in size }k_1-1 \\
+&x \in L_2 \Rightarrow  f'_2(x)=<G'_2,k_2> \text{and the biggest clique in }G'_2\text{ is in size }k_2-1 \\
+&x\notin L_2 \Rightarrow   f'_2(x)=<G'_2,k_2> \text{and the biggest clique in }G'_2\text{ is in size }k_2  \\
+\end{align*}
+Now we ready to set our reduction function $f$ from $L$ to $EC$. Given $x\Sigma^*$ we will run $f'_1(x),f'_2(x)$ and get $<G'_1,k_1>$ and $<G'_2,k_2>$ where by our notice $k_1\ne k_2$, we return $f(x) =<G'_1\times G'_2,k_1\cdot (k_2-1)>$. And we got:
+\begin{align*}
+&x\in L \Rightarrow x\in L_1 \wedge x \in L_2 \Rightarrow \\
+& \text{the biggest clique in }G'_1\text{ is in size }k_1 \wedge \\
+&\text{the biggest clique in }G'_2\text{ is in size }k_2-1 \Rightarrow\\
+& \text{the biggest clique in  } G'_1\times G'_2  \text{ is of size } k_1\cdot (k_2-1) \Rightarrow\\
+& f(x)\in EC\\
+\\
+&x\notin L \Rightarrow x\notin L_1 \vee x \notin L_2 \Rightarrow \\
+& \text{the biggest clique in }G'_1\text{ is in size }k_1-1 \vee \\
+&\text{the biggest clique in }G'_2\text{ is in size }k_2 \Rightarrow\\
+& \text{the biggest clique in  } G'_1\times G'_2  \text{ is size } ((k_1-1)\cdot k_2) \text{ or } (k_1\cdot k_2) \text{ or } ((k_1-1)\cdot (k_2-1)) \\
+&\text{which in any case } \ne (k_1\cdot (k_2-1)) \Rightarrow\\
+& f(x)\notin EC
+\end{align*}
 \newpage
 \section*{Question 4}
 \subsection*{a. }
