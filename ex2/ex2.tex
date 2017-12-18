@@ -162,10 +162,21 @@ Together with our assumption we got:
 CO-NP \subseteq DP \subseteq NP
 \end{align*}
 And we already showed in Q.2 that $CO-NP \subseteq NP$ is concluding to $PH=NP$.
-\subsection*{b. } Given $L\in DP$ I will show how to reduce it in polynomial time to $EC$ (Exact -Clique). I will use the known fact $CLIQUE\in NP-Complete$, where:
+\subsection*{b. }
+First I will show $EC$ (Exact -Clique) is in $DP$, as we know $CLIQUE\in NP$
 \begin{align*}
 CLIQUE = \{ <G,k> : \text{there exists clique in } G \text{ of size } k \}
 \end{align*}
+So for: 
+\begin{align*}
+CLIQUE_{+1} = \{ <G,k> : \text{there exists clique in } G \text{ of size } k+1 \}
+\end{align*}
+Clearly $CLIQUE_{+1} \in NP$, so $\overline{CLIQUE_{+1}} \in CO-NP$ and we got:
+\begin{align*}
+EC = CLIQUE \cap \overline{CLIQUE_{+1}}
+\end{align*}
+And we conclude $EC\in DP$.\\
+To show $EC \in DP-hard$, given $L\in DP$ I will show how to reduce it in polynomial time to $EC$. I will use the known fact $CLIQUE\in NP-Complete$.
 From this fact we know that $\overline{CLIQUE}\in CO-NP-Complete$.
 Given $L\in DP$, we know:
 \begin{align*}
@@ -195,7 +206,7 @@ We will set new reduction function $f'_i$ ($i\in \{1,2 \}$) on input $x$, $f'_i$
 &x \in L_2 \Rightarrow  f'_2(x)=<G'_2,k_2> \text{and the biggest clique in }G'_2\text{ is in size }k_2-1 \\
 &x\notin L_2 \Rightarrow   f'_2(x)=<G'_2,k_2> \text{and the biggest clique in }G'_2\text{ is in size }k_2  \\
 \end{align*}
-Now we ready to set our reduction function $f$ from $L$ to $EC$. Given $x\Sigma^*$ we will run $f'_1(x),f'_2(x)$ and get $<G'_1,k_1>$ and $<G'_2,k_2>$ where by our notice $k_1\ne k_2$, we return $f(x) =<G'_1\times G'_2,k_1\cdot (k_2-1)>$. And we got:
+Now we ready to set our reduction function $f$ from $L$ to $EC$. Given $x\Sigma^*$ we will run $f'_1(x),f'_2(x)$ and get $<G'_1,k_1>$ and $<G'_2,k_2>$ where by our notice $k_1\ne k_2$, we return $f(x) =<G'_1\times G'_2,k_1\cdot (k_2-1)>$ ($G'_1\times G'_2$ will just return both union of the graphs with addition than each node in $G'_1$ will be connected to all the  nodes of $G'_2$). And we got:
 \begin{align*}
 &x\in L \Rightarrow x\in L_1 \wedge x \in L_2 \Rightarrow \\
 & \text{the biggest clique in }G'_1\text{ is in size }k_1 \wedge \\
