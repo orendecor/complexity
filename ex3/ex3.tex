@@ -1,0 +1,209 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{verbose,letterpaper,tmargin=24mm,bmargin=24mm,lmargin=24mm,rmargin=24mm}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,hobby,backgrounds,fit,positioning}
+\usepackage[thmmarks]{ntheorem}
+\usepackage{amssymb}
+\usepackage{caption,graphicx,newfloat}
+\usepackage[justification=centering]{caption}% or e.g. [format=hang]
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\DeclareCaptionType{InfoBox}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{claim}{Claim}[theorem]
+\newtheorem*{notice}{Notice}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{definition}{Definition}
+
+\makeatletter
+\newtheoremstyle{nonumberplainnobrackets}%
+  {\item[\theorem@headerfont\hskip\labelsep ##1\theorem@separator]}%
+  {\item[\theorem@headerfont\hskip \labelsep ##1\ ##3\theorem@separator]}
+\makeatother
+
+\theoremstyle{nonumberplainnobrackets}
+\theoremsymbol{\ensuremath{\Box}}
+\newtheorem{proof}{Proof}
+
+\theoremsymbol{\ensuremath{\blacksquare}} 
+\newtheorem{claimproof}{Proof of claim}
+\newtheorem{lemmaproof}{Proof of lemma}
+
+
+
+\usepackage{hyperref,amsmath}
+\usepackage {tikz}
+\usetikzlibrary {positioning,automata,arrows}
+\usepackage{caption}
+\definecolor {processblue}{cmyk}{0.96,0,0,0}
+%opening
+\title{Complexity - Exercise 3}
+\author{Oren Roth - 200701068}
+\date{\today}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+\pgfdeclareshape{item}{
+	\savedanchor\northeast{\squarecorner{}}
+	\savedanchor\southwest{\squarecorner{-}}
+	
+	\foreach \x in {east,west} \foreach \y in {north,mid,base,south} {
+		\inheritanchor[from=rectangle]{\y\space\x}
+	}
+	\foreach \x in {east,west,north,mid,base,south,center,text} {
+		\inheritanchor[from=rectangle]{\x}
+	}
+	\inheritanchorborder[from=rectangle]
+	\inheritbackgroundpath[from=rectangle]
+}
+
+\begin{document}
+
+\maketitle
+\section*{Question 1}
+Assume by contradiction:
+\begin{align}\label{np}
+DSPACE(n^3) = NP
+\end{align}
+Let $S\in DSPACE(n^9) \setminus DSPACE(n^3)$, we assure it exists by space hierarchy theorem, let $M_S$ be the TM that determine $S$ in $n^9$ time, denote a new language:
+\begin{align*}
+S' = \{ 1^{|x|^3} 0x : \forall x\in S   \}
+\end{align*}
+Now we can have new TM, $M_{S'}$, which given input $w$ will:
+\begin{enumerate}
+	\item  Count in $i$ and delete the leading 1's until the first zero, delete the first zero as well - denote by $x$ the word that left on the tape
+	\item  Assure $|x|^3 = i$, if not reject
+	\item run $M_S$ on the $x$ and return as $M_S$
+\end{enumerate}
+$M_{S'}$ will determine $S'$:
+\begin{align*}
+w\in S' \iff  w =  1^{|x|^3} 0x \wedge  x\in S  \iff M_{S'} \text{ on }w \text{ will pass step 2 without rejects and will accept in step 3} \\ \iff M_{S'} \;accepts  \; w
+\end{align*}
+The time $M_{S'}$ runs steps 1,2 in linear time with respect to the input size, we pass step 2 only if we run $M_{S'}$ on input from the form $w=1^{|x|^3} 0x$. Step 3 run $M_S$ on $x$ which takes $|x|^9$ time, which is smaller than $|w|^3$ time (As $|w| \ge |x|^3$). Concluding $M_{S'}$ runs in $n^3$ time.
+\begin{align*}
+S' \in  DSPACE(n^3)
+\end{align*}
+By (\ref{np}) we know $S' \in NP$, and hence there is $M'$, TM for which 
+\begin{align*}
+x\in S' \iff \exists y\;s.t.\; M;(x,y) \;accepts
+\end{align*}
+Given $M'$, we can show that $S\in NP$ by showing the following TM $M$. On input $(x,y)$, $M$ add leading $|x|^3$ 1's to $x$ and runs and return as $M'(1^{|x|^3} 0x,y)$, clearly $M$ runs in polynomial time, now we have:
+\begin{align*}
+x\in S \iff 1^{|x|^3} 0x\in S' \iff \exists y\;s.t.\; M'(1^{|x|^3} 0x,y) \;accepts \iff  \exists y\;s.t.\; M(x,y) \;accepts
+\end{align*}
+So we conclude $S\in NP$ and by  (\ref{np}) we know $S \in  DSPACE(n^3)$ which is contradiction to the definition of $S$.
+\section*{Question 2}
+\subsection*{a.} Let $A\in PP$ and let $M$ be the probabilistic TM that determine it as promise by the definition of $PP$. $M$ is polynomial, and let $p(n)$ be the upper bound of steps $M$ takes for input of size $n$. W.L.O.G assume $M$ runs exactly $p(n)$ steps for each input and for each random calculation route. (If $M$ is not like that we can look at another TM which acts like $M$ and for each calculation route if it's not exceed $p(n)$ steps than it does dummy steps until it reaches and rejects/accepts).\\
+\\
+Let us define $M'$, deterministic TM which will determine $A$ in polynomial space. $M'$ will hold two counters, one for counting all the accepting paths of $M$ on given input $x$. The second counter will count all the rejecting paths of $M$ on $x$. Given $x$, $M'$ will simulate $M$ on $x$ but instead of using a random bit to decide whereas using $\delta_1$ or $\delta_2$ it will go over all possible $2^{p(|x|)}$ options (We assume each calculation route has exactly $p(n)$ steps and hence $2^{p(|x|)}$ calculation routes). Namely, $M'$ will go over all $r\in \{0,1\}^{p(|x|)}$, for each $r$, it will simulate $M$ where in each step $i$, $M$ will take $\delta_{r[i]}$. In the end of each simulation $M'$ will add 1 to the corresponding counter (depends if it accepts or rejects in the end). $M'$ accepts if and only if the first counter is strictly bigger than the second counter.\\
+\\
+We notice that number of accepting routes of $M$ is corresponding exactly with the probability that $M$ accepts $x$. So we have:
+\begin{align*}
+M'\;accepts\; x\iff M \text{ has more accepting routes which accepts }x\iff \Pr[M\;accpets \;x]>\frac{1}{2}\\\iff x\in A 
+\end{align*} 
+$M'$ use two counters of size $\log (2^{p(|x|)})=p(|x|)$ and tape to go over all the possible $r$'s which also needs $p(|x|)$ bits. To simulate $M$ we need another tape with maximum $p(|x|)$ space as $M$ runs at most $p(|x|)$ steps. In total $M'$ use at most $4\cdot p(|x|)$ space, so we conclude $A\in PSPACE$.
+\subsection*{b.} Given $x$, $N$ in the first step will use a coin $r$, identical distribute over $\{0,1\}$. If $r=0$, $N$ will run $M$ on $x$ and return as $M$, otherwise $N$ accepts.
+\begin{align*}
+\Pr[N\;accepts\;x]=\frac{1}{2}+\frac{1}{2}\cdot \Pr[M\;accepts\;x]
+\end{align*}
+\subsection*{c.} Given $A\in NP$ let $M$ be non deterministic TM for which:
+\begin{align*}
+x\in A \iff \text{there is accepting route in the run of } M \text{ on } x
+\end{align*}
+Let $N$ be the corresponding TM for $M$ as described in the previous clause (2b.). We claim for $N$: 
+\begin{align*}
+x\in A&\quad \Pr[N\;accepts\;x]>\frac{1}{2}\\
+x\notin A&\quad \Pr[N\;accepts\;x]\le\frac{1}{2}
+\end{align*}
+By question (2b.) we knoe:
+\begin{align*}
+\Pr[N\;accepts\;x]= \frac{1}{2}+\frac{1}{2}\cdot \Pr[M\;accepts\;x]
+\end{align*}
+Well if $x\in A$ there is accepting route of $M$ so
+\begin{align*}
+ \Pr[M\;accepts\;x] > 0
+\end{align*}
+So we get:
+\begin{align*}
+\Pr[N\;accepts\;x]= \frac{1}{2}+\frac{1}{2}\cdot \Pr[M\;accepts\;x] >  \frac{1}{2}
+\end{align*}
+Otherwise if $x\notin A$ there is no accepting route of $M$ so
+\begin{align*}
+\Pr[M\;accepts\;x] = 0
+\end{align*}
+And we get:
+\begin{align*}
+\Pr[N\;accepts\;x]= \frac{1}{2}+\frac{1}{2}\cdot \Pr[M\;accepts\;x] =  \frac{1}{2}
+\end{align*}
+And we proof our claim, concluding $A\in PP$. And hence:
+\begin{align*}
+NP\subseteq PP
+\end{align*}
+\section*{Question 3}
+
+\section*{Question 4}
+We will show  $coNP\subseteq IP'$ and $IP'\subseteq coNP$.\\ \\
+\underline{$IP'\subseteq coNP$}: Let $A\in coNP$ so we know there is a TM $M$ s.t.
+\begin{align*}
+x\in A \iff \forall y :\;M(x,y)\; accepts
+\end{align*}
+Let us show $A\in IP'$ by describing protocol of a prover $P$ and Verifier $V$. \\
+Given $x$, $P$ will send to the $V$, $y$. $V$ will run $M(x,y)$ and answer as $M$.\\
+\\
+If $x\in A$, for any prover $P$, no matter which $y$ it sends, $V$ will accepts with probability 1. (As $M(x,y)$ accepts for all $y$). \\
+If $x\notin A$ than by definition there exists $y$ s.t. $M(x,y)$ rejects. So the prover that sends this $y$ will make $P$ accepts with probability 0, which is smaller than one half.  \\
+We conclude:
+\begin{align*}
+A\in IP'
+\end{align*}
+\\
+\underline{$coNP\subseteq IP'$}: Let $A\in IP'$, and let be $V$ the verifier protocol, so we define non-deterministic TM $M$ which will show $A\in coNP$. On given input $x$, $M$ will guess $y=(a,r)$ where $a$ will be a guess of all answers of some prover for all the questions of $V$, and $r$ will be a guess of the coins that $V$ takes. As $IP'$ define both $a,r$ are polynomial in $x$. $M$ will simulate $V$ on answers $a$ with the coins $r$ and accepts iff $V$ accepted.
+\\
+\\
+If $x\in A$, for any prover $P$, $V$ will accepts for all answers with probability 1 $\Rightarrow$ for any guess $y=(a,r)$, $M(x,y)$ accepts.\\
+If $x\notin A$, there exists prover s.t $\Pr[V\;accepts \;x]\le \frac{1}{2}$ $\Rightarrow$ for this prover's answers $a$, not all the calculation routes of $V$ are accepting $\Rightarrow$ there exists $y=(a,r)$ s.t. $V(x)$ with coins $r$ and answers $a$ rejects $\Rightarrow$ Exists y s.t. $M(x,y)$ rejects.\\
+We conclude:
+\begin{align*}
+x\in A\iff \forall y:\; M(x,y) \; accepts
+\end{align*}
+And hence:
+\begin{align*}
+A\in coNP
+\end{align*}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
