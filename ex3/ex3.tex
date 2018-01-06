@@ -155,7 +155,86 @@ And we proof our claim, concluding $A\in PP$. And hence:
 \begin{align*}
 NP\subseteq PP
 \end{align*}
+
+
+
 \section*{Question 3}
+\subsection*{a.}
+%Denote by $A$ all the sub graphs $G|_U$:
+%\begin{align*}
+%A= \{ G|_U : |U|=2\log n  \}
+%\end{align*}
+%%Notice that $|A| = \frac{2\log n}{n}$.\\
+%Denote by $\mathbb{E}[*]$ the expected maximal size IS in $G|_U$ that uniformly selected from $A$.
+%We will show that $\mathbb{E}[*]$ is at least $\frac{2k\log n}{n}$. Let $I^*$ be the IS of size $k$ in $G$, divide to cases:
+%
+%\begin{enumerate}
+%	\item $k>2\log n$\\
+%	At least $k$ graphs $A' \subseteq A$ are sub graphs of $I^*$, each $G|_U\in A'$ is IS as well of size $2\log n$, $G|_U$ is selected uniformly from $A$, and hence we get:
+%	\begin{align*}
+%&\mathbb{E}[*] \ge \sum_{G|_U\in A'}(\Pr[\text{choosing $G|_U$}] \cdot |\text{maximal IS in $G|_U$}|) =\\
+%&= \sum_{G|_U\in A'}((\frac{2\log n}{n} \cdot (2\log n)) \ge  k \cdot(\frac{2\log n}{n} \cdot (2\log n)) \ge k \cdot(\frac{2\log n}{n} ) 
+%	\end{align*}
+%	\item $k\le2\log n$\\
+%	So we have at least one set $I\in A$ which contains $I^*$, it has maximal IS in size $k$ as well. And for sure $\mathbb{E}[*]$ is at least the size of the maximal size in $I$ times the probability to choose it:
+%		\begin{align*}
+%	&\mathbb{E}[*] \ge k \cdot(\frac{2\log n}{n} ) 
+%	\end{align*}
+%\end{enumerate}
+Let $U\sim^{U} V$, denote:
+\begin{align*}
+U = \{ u_1,u_2,\ldots,u_{2\log n}	 \}
+\end{align*}
+Let $I^*$ be the IS of size $k$ in $G$. We denote $2\log n$ random variables $Y_i$, for each $1\le i \le 2 \log n$:
+	\begin{align*}
+Y_i = \begin{cases}
+1  & \text{if } u_i\in I^* \\
+0  & \text{otherwise}
+\end{cases} 
+\end{align*}
+Denote new random variable
+
+\begin{align*}
+Y = \sum_{i=1}^{2\log n} Y_i
+\end{align*}
+Denote by $\mathbb{E}[*]$ the expected maximal size IS in $G|_U$, when $U$ is uniformly drawn from $V$. 
+So we having:
+\begin{align*}
+&\mathbb{E}[*] \ge \mathbb{E}[Y]
+\end{align*}
+Due to the fact than any choice for $u_i$'s get the LHS bigger than the RHS (as on the RHS a choice for $u_i$ with value $Y=r$ says that there is at least IS of size $r$ in $G|_U$)
+We need to show:
+	\begin{align*}
+&\mathbb{E}[*] \ge k \cdot(\frac{2\log n}{n} ) 
+\end{align*}
+We will show \begin{align*}
+& \mathbb{E}[Y] \ge  k \cdot(\frac{2\log n}{n} ) 
+\end{align*}
+And from transitivity we will gain our goal. 
+\begin{align*}
+&\mathbb{E}[Y_i] = \frac{k}{n}
+\end{align*}
+As for each node $u\in V$ there is $k$ over $n$ options to be in $I^*$.
+\begin{align*}
+\mathbb{E}[Y] = \mathbb{E}[ \sum_{i=1}^{2\log n} Y_i] =  \sum_{i=1}^{2\log n} \mathbb{E}[ Y_i] = 2\log n \cdot \frac{k}{n}
+\end{align*}
+And we conclude:
+	\begin{align*}
+&\mathbb{E}[*] \ge k \cdot(\frac{2\log n}{n} ) 
+\end{align*}
+Denote by $A$ all the sub graphs $G|_U$:
+\begin{align*}
+A= \{ G|_U : |U|=2\log n  \}
+\end{align*}
+Now we will show that at least $\alpha$ of the graphs in $A$ have IS in size $\frac{k\log n }{n}$, where $\alpha=\frac{n-2\log n}{n-\log n}$. If by contradiction this is not true, we will have less than $\alpha$ of the graphs in $A$ having maximal IS of size smaller than $\frac{k\log n }{n}$ and for the rest of the graphs have IS of size at most $k$, so we conclude:
+	\begin{align*}
+&\mathbb{E}[*] < \alpha \cdot \frac{k\log n}{n}  + (1-\alpha)\cdot k = k \cdot(\frac{2\log n}{n} ) 
+\end{align*}
+But this is contradiction to what we showed before. So we conclude at least $\alpha$ of the graphs in $A$ have IS in size $\frac{k\log n }{n}$.
+\begin{align*}
+\Pr[\text{maximal IS size in }G|_U < \frac{k\log n }{n}]\le 1-\alpha = \frac{\log n}{n- \log n}
+\end{align*}
+\subsection*{b.}
 
 \section*{Question 4}
 We will show  $coNP\subseteq IP'$ and $IP'\subseteq coNP$.\\ \\
