@@ -185,7 +185,7 @@ Let $U\sim^{U} V$, denote:
 \begin{align*}
 U = \{ u_1,u_2,\ldots,u_{2\log n}	 \}
 \end{align*}
-Let $I^*$ be the IS of size $k$ in $G$. We denote $2\log n$ random variables $Y_i$, for each $1\le i \le 2 \log n$:
+Let $I^*$ be the IS of size $k$ in $G$. We denote $(2\log n)$ random variables, $Y_i$'s, for each $1\le i \le (2 \log n)$:
 	\begin{align*}
 Y_i = \begin{cases}
 1  & \text{if } u_i\in I^* \\
@@ -202,7 +202,7 @@ So we having:
 \begin{align*}
 &\mathbb{E}[*] \ge \mathbb{E}[Y]
 \end{align*}
-Due to the fact than any choice for $u_i$'s get the LHS bigger than the RHS (as on the RHS a choice for $u_i$ with value $Y=r$ says that there is at least IS of size $r$ in $G|_U$)
+Due to the fact than any choice for all the $u_i$'s get the LHS bigger than the RHS (as on the RHS a choice for $u_i$ with value $Y=r$ says that there is at least IS of size $r$ in $G|_U$, namely all $Y_i$ that equal 1 are correspond to $u_i$'s which are IS of size $r$ and it could be that there is even a bigger IS in $G|_U$).
 We need to show:
 	\begin{align*}
 &\mathbb{E}[*] \ge k \cdot(\frac{2\log n}{n} ) 
@@ -226,16 +226,27 @@ Denote by $A$ all the sub graphs $G|_U$:
 \begin{align*}
 A= \{ G|_U : |U|=2\log n  \}
 \end{align*}
-Now we will show that at least $\alpha$ of the graphs in $A$ have IS in size $\frac{k\log n }{n}$, where $\alpha=\frac{n-2\log n}{n-\log n}$. If by contradiction this is not true, we will have less than $\alpha$ of the graphs in $A$ having maximal IS of size smaller than $\frac{k\log n }{n}$ and for the rest of the graphs have IS of size at most $k$, so we conclude:
+Now we will show that at least $\alpha$ of the graphs in $A$ have IS of size $\frac{k\log n }{n}$, where $\alpha=\frac{n-2\log n}{n-\log n}$. If by contradiction this is not true, we will have less than $\alpha$ of the graphs in $A$ having maximal IS of size smaller than $\frac{k\log n }{n}$ and for the rest of the graphs have IS of size at most $k$, so we conclude:
 	\begin{align*}
 &\mathbb{E}[*] < \alpha \cdot \frac{k\log n}{n}  + (1-\alpha)\cdot k = k \cdot(\frac{2\log n}{n} ) 
 \end{align*}
-But this is contradiction to what we showed before. So we conclude at least $\alpha$ of the graphs in $A$ have IS in size $\frac{k\log n }{n}$.
+But this is contradiction to what we showed before. So we conclude at least $\alpha$ of the graphs in $A$ have IS of size $\frac{k\log n }{n}$.
 \begin{align*}
 \Pr[\text{maximal IS size in }G|_U < \frac{k\log n }{n}]\le 1-\alpha = \frac{\log n}{n- \log n}
 \end{align*}
 \subsection*{b.}
-
+For any $n>10$ we have $\alpha >1/2$, means at least an half of the graphs in $A$ have IS of size $\frac{k\log n }{n}$. We will use the following algorithm to solve it for any $n>10$ (for less than that we could just use exhausted search in polynomial time).
+\begin{enumerate}
+	\item Choose uniformly $U$ subset of size $2\log n$ from $V$.
+	\item Go over all the subset of $U$ if one of the is IS of size $\frac{k\log n }{n}$ return it.
+	\item Otherwise, return false. 
+\end{enumerate}
+The algorithm is polynomial, as we have $2^{2\log n} = n^2$ subsets of $U$, so we can go over each on of them, in polynomial time. For each subset we can check its size and check there is no edge between any pair of nodes in $\log ^2 n$ time.\\ \\
+If the algorithm return anything but false it's only because it found a IS of size $\frac{k\log n }{n}$. So:
+	\begin{align*}
+\Pr[\text{The algorithm got wrong answer}] = \text{the algorithm reach line 3}
+\end{align*}
+Which as we showed in (3a) there is less than half a chance to be in this scenario.
 \section*{Question 4}
 We will show  $coNP\subseteq IP'$ and $IP'\subseteq coNP$.\\ \\
 \underline{$IP'\subseteq coNP$}: Let $A\in coNP$ so we know there is a TM $M$ s.t.
