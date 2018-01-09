@@ -207,26 +207,20 @@ We need to show:
 	\begin{align*}
 &\mathbb{E}[*] \ge k \cdot(\frac{2\log n}{n} ) 
 \end{align*}
-We will show \begin{align*}
-& \mathbb{E}[Y] \ge  k \cdot(\frac{2\log n}{n} ) 
+$Y\sim HG(n,k,2\log n)$, where $HG$ is the hypergeometric distribution, as we can think of $Y$ as $2 \log n$ tries to take nodes from $I^*$ where there are total $n$ options.
+The expectation for the hypergeometric distribution is:
+ \begin{align*}
+& \mathbb{E}[Y] =  k \cdot(\frac{2\log n}{n} ) 
 \end{align*}
-And from transitivity we will gain our goal. 
-\begin{align*}
-&\mathbb{E}[Y_i] = \frac{k}{n}
-\end{align*}
-As for each node $u\in V$ there is $k$ over $n$ options to be in $I^*$.
-\begin{align*}
-\mathbb{E}[Y] = \mathbb{E}[ \sum_{i=1}^{2\log n} Y_i] =  \sum_{i=1}^{2\log n} \mathbb{E}[ Y_i] = 2\log n \cdot \frac{k}{n}
-\end{align*}
-And we conclude:
+And from transitivity we have: 
 	\begin{align*}
-&\mathbb{E}[*] \ge k \cdot(\frac{2\log n}{n} ) 
+&\mathbb{E}[*] \ge \mathbb{E}[Y] \ge k \cdot(\frac{2\log n}{n} ) 
 \end{align*}
 Denote by $A$ all the sub graphs $G|_U$:
 \begin{align*}
 A= \{ G|_U : |U|=2\log n  \}
 \end{align*}
-Now we will show that at least $\alpha$ of the graphs in $A$ have IS of size $\frac{k\log n }{n}$, where $\alpha=\frac{n-2\log n}{n-\log n}$. If by contradiction this is not true, we will have less than $\alpha$ of the graphs in $A$ having maximal IS of size smaller than $\frac{k\log n }{n}$ and for the rest of the graphs have IS of size at most $k$, so we conclude:
+Now we will show that at least $\alpha$ of the graphs in $A$ have IS of size $\frac{k\log n }{n}$, where $\alpha=\frac{n-2\log n}{n-\log n}$. If by contradiction this is not true, we will have less than $\alpha$ of the graphs in $A$ having maximal IS of size smaller than $\frac{k\log n }{n}$ and for the rest of the graphs have IS of size at most $k$ (Note: Eden approve me to assume that the biggest IS in $G$ is of size $k$), so we conclude:
 	\begin{align*}
 &\mathbb{E}[*] < \alpha \cdot \frac{k\log n}{n}  + (1-\alpha)\cdot k = k \cdot(\frac{2\log n}{n} ) 
 \end{align*}
