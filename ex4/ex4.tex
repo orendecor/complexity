@@ -1,0 +1,246 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{verbose,letterpaper,tmargin=24mm,bmargin=24mm,lmargin=24mm,rmargin=24mm}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,hobby,backgrounds,fit,positioning}
+\usepackage[thmmarks]{ntheorem}
+\usepackage{amssymb}
+\usepackage{caption,graphicx,newfloat}
+\usepackage[justification=centering]{caption}% or e.g. [format=hang]
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\DeclareCaptionType{InfoBox}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{claim}{Claim}[theorem]
+\newtheorem*{notice}{Notice}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{definition}{Definition}
+
+\makeatletter
+\newtheoremstyle{nonumberplainnobrackets}%
+  {\item[\theorem@headerfont\hskip\labelsep ##1\theorem@separator]}%
+  {\item[\theorem@headerfont\hskip \labelsep ##1\ ##3\theorem@separator]}
+\makeatother
+
+\theoremstyle{nonumberplainnobrackets}
+\theoremsymbol{\ensuremath{\Box}}
+\newtheorem{proof}{Proof}
+
+\theoremsymbol{\ensuremath{\blacksquare}} 
+\newtheorem{claimproof}{Proof of claim}
+\newtheorem{lemmaproof}{Proof of lemma}
+
+
+
+\usepackage{hyperref,amsmath}
+\usepackage {tikz}
+\usetikzlibrary {positioning,automata,arrows}
+\usepackage{caption}
+\definecolor {processblue}{cmyk}{0.96,0,0,0}
+%opening
+\title{Complexity - Exercise 4}
+\author{Oren Roth - 200701068}
+\date{\today}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+\pgfdeclareshape{item}{
+	\savedanchor\northeast{\squarecorner{}}
+	\savedanchor\southwest{\squarecorner{-}}
+	
+	\foreach \x in {east,west} \foreach \y in {north,mid,base,south} {
+		\inheritanchor[from=rectangle]{\y\space\x}
+	}
+	\foreach \x in {east,west,north,mid,base,south,center,text} {
+		\inheritanchor[from=rectangle]{\x}
+	}
+	\inheritanchorborder[from=rectangle]
+	\inheritbackgroundpath[from=rectangle]
+}
+
+\begin{document}
+
+\maketitle
+\section*{Question 1}
+\subsection*{a.} Let $(S,T)$ be a random cut, where each node is chosen uniformly  i.i.d  to be in $S$ or $T$. We will define indicator for each $(u,v)\in E$, if this edge is in the cut:
+\begin{align*}
+X_{(u,v)} = \begin{cases}
+0  & u,v\in S \\
+0  & u,v\in T \\
+1  & \text{otherwise}
+\end{cases} 
+\end{align*}
+Define new random variable $X=|E(S,T)|$:
+\begin{align*}
+X = \sum_{e\in E} X_e
+\end{align*}
+For $X_{(u,v)}$ half of the cases of choosing $u,v$ their sets, give $X_{(u,v)}$ value 1, and we know $u,v$ is drawn uniformly:
+\begin{align*}
+\mathbb{E}[X_e] = \frac{1}{2}
+\end{align*}
+We calculate the expectation of $X$,
+\begin{align*}
+\mathbb{E}[X] = \mathbb{E}[\sum_{e\in E} X_e] = \sum_{e\in E} \mathbb{E}[X_e] = \frac{|E|}{2}
+\end{align*}
+As the graph is finite, we have at least one cut with cut of size $\frac{|E|}{2}$, which gives us solution of value:
+\begin{align*}
+\frac{\frac{|E|}{2}}{|E|} = \frac{1}{2}
+\end{align*}
+\subsection*{b.} Let $A\in NP- Complete$, we know $NP=PCP_{\alpha,\beta}^{\ne} (\log n,2) $, and hence:
+\begin{align*}
+A\in PCP_{\alpha,\beta}^{\ne} (\log n,2) 
+\end{align*}
+So we have verifier $V$ for $A$ which, for any input $x$ of length $n$, uses $c_1\cdot \log n$ coins. For each choice $\hat{r}$ of coins, it asks two queries $j_1^{\hat{r}},j_2^{\hat{r}}$. For any proof $\pi$ we know that the probability $V$ will accept $x$ is:
+\begin{align*}
+\Pr_{\hat{r}\in_R \{0,1\}^{c_1\cdot \log n}}[\pi(j_1^{\hat{r}}) \oplus \pi(j_2^{\hat{r}})=1]
+\end{align*}
+There are at most $2\cdot 2^{c_1\log n} = 2\cdot n^{c_1}$ different values of queries $j_i^{\hat{r}}$ that $V$ can ask ($2^{c_1\log n} $ options for the coins and $2$ for the queries). So we can create the following graph $G=(V,E)$ in polynomial time in $n$:
+\begin{align*}
+&V= \{1,2,\ldots, 2\cdot n^{c_1} \}\\
+&E=\{ (j_1^{\hat{r}},j_2^{\hat{r}}) : {\hat{r}\in \{0,1\}^{c_1\cdot \log n}} \}
+\end{align*}
+There are $poly(n)$ vertices and edges in $G$.
+We can think of a proof $\pi$ as partition of $V$ to a cut $(S,T)$ like this:
+\begin{align*}
+&\pi(j_i^{\hat{r}})=0 \Rightarrow j_i^{\hat{r}}\in S\\
+&\pi(j_i^{\hat{r}})=1 \Rightarrow j_i^{\hat{r}}\in T\\
+\end{align*}
+And the probability that $V$ will accept $x$ ($\Pr_{\hat{r}\in_R \{0,1\}^{c_1\cdot \log n}}[\pi(j_1^{\hat{r}}) \oplus \pi(j_2^{\hat{r}})=1]$) is exactly the number of edges crossing a cut define by $\pi$, divide by the number of edges.
+So if we define $OPT$ to be the value of $Max\;Cut$ problem, we are having,
+\begin{align*}
+OPT(G) = \max_\pi\{ \Pr [\pi \text{ make $V$ accept $x$}] \}
+\end{align*}
+By the definition of $PCP_{\alpha,\beta}^{\ne} (\log n,2) $ we know:
+\begin{itemize}
+	\item If $x\in A$ we have $G$ with $OPT\ge \beta$
+		\item If $x\notin A$ we have $G$ with $OPT\le \alpha$
+\end{itemize}
+And we showed a gap reduction for an $NP-complete$ problem to $Max\;Cut$.
+So we conclude, by the notice we showed in class, that for every $\gamma > \frac{\alpha}{\beta}$, there is no $\gamma-apprixmation$ algorithm to $Max\; Cut$ unless $P=NP$.
+\subsection*{c.} 
+Let $A\in PCP_{\alpha,1}^{\ne} (\log n,2) $, so $A$ has a verifier $V$ which, for any input $x$ of length $n$, uses $c_1\cdot \log n$ coins. Let be $x$ an input, there are $2^{c_1\log n} = n^{c_1}$ computation paths for $V$ on $x$ (for each choice of coins). In each path, $V$ choose two queries. Denote the pair of queries of all computational paths:
+\begin{align*}
+\{ <X_i^1,X_i^2> \}_{i=1}^{n^{c_1}}
+\end{align*} 
+By the definition of $PCP_{\alpha,1}^{\ne} (\log n,2) $, $x\in A$ if and only if there is a proof $\pi$ which satisfy:
+\begin{align*}
+\forall 1\le i \le n^{c_1}: \quad\pi(X_i^1) \oplus \pi(X_i^2) =1
+\end{align*}
+Existence of $\pi$ which satisfy the above is equivalent to check if the following $2-SAT$ is satisfied:
+\begin{align*}
+\psi =\bigwedge_{i=1}^{n^{c_1}} [(X_i^1\vee X_i^2) \wedge (\overline{X_i^1} \vee \overline{X_i^2})]
+\end{align*}
+Due to the equality:
+\begin{align*}
+X\oplus Y = 1 \iff (X\vee Y) \wedge (\overline{X} \vee \overline{Y}) =1
+\end{align*}
+Checking whereas $\psi$ is satisfiable, can be checked in polynomial time ($2-SAT\in P$) and which will determine if $x\in A$.\\
+\textbf{Conclusion: } For a given $x$, we can reduce it to $2-SAT$ in polynomial time (going over $poly(n)$ calculation paths and build $poly(n)$ clauses to create $\psi$). As $2-SAT\in P$ we conclude $A\in P$.
+\section*{Question 2}
+\subsection*{a.} 
+Define $L_i$ as all the nodes in distance $i$ from $s$ in $G'$.
+So for $i\ne j$ we know $L_i\cap L_j = \emptyset$, we conclude:
+\begin{align*}
+\sum_{i=0}^k |L_i| \le |V'|
+\end{align*}
+We can use it to conclude the last inequality here:
+\begin{align*}
+k\cdot \min_{i=1}^k\{|L_{i-1}| +|L_i| \} &\le \sum_{i=1}^k\{|L_{i-1}| +|L_i| \} =  |L_0|  + |L_k|+ 2\cdot\sum_{i=1}^{k-1}\{|L_{i}| \} \le \\
+& \le 2\cdot\sum_{i=0}^{k}\{|L_{i}| \} \le 2\cdot |V'|
+\end{align*}
+Which from this we conclude:
+\begin{align*}
+ \min_{i=1}^k\{|L_{i-1}| +|L_i| \} \le \frac{2\cdot |V'|}{k}
+\end{align*}
+Let $j\in argmin_{i=1}^k\{|L_{i-1}| +|L_i| \} $, we know:
+\begin{align*}
+|L_{j-1}| +|L_j|  \le \frac{2\cdot |V '|}{k}
+\end{align*}
+So we conclude:
+\begin{align*}
+(|L_{j-1}| +|L_j|)^2  &\le \frac{4\cdot |V '|^2}{k^2} \quad\Rightarrow\\
+|L_{j-1}|^2 +|L_j|^2 + 2|L_{j-1}|\cdot|L_j|  &\le \frac{4\cdot |V '|^2}{k^2} 
+\end{align*}
+But we know:
+\begin{align*}
+(|L_{j-1}| -|L_j|)^2 &\ge 0 \quad\Rightarrow\\
+|L_{j-1}|^2  + |L_j|^2 - 2|L_{j-1}|\cdot|L_j|  &\ge 0 \quad\Rightarrow\\
+|L_{j-1}|^2  + |L_j|^2 &\ge + 2|L_{j-1}|\cdot|L_j|
+\end{align*}
+And together with the last two inequalities we conclude:
+\begin{align*}
+4|L_{j-1}|\cdot|L_j| &\le \frac{4\cdot |V '|^2}{k^2}  \quad\Rightarrow\\
+|L_{j-1}|\cdot|L_j| &\le \frac{ |V '|^2}{k^2} 
+\end{align*} 
+Define cut $F=\{(u,v)  :u\in L_{j-1},\;v\in L_j \}$, we have at most $L_{j-1}$ times $L_j$ edges in $F$, together with previous inequality we get:
+\begin{align*}
+|F| \le |L_{j-1}|\cdot |L_j| \le \frac{|V'|^2}{k^2}
+\end{align*}
+Because any path from $s$ to $t$ passing through the cut $F$, $F$ is separating $s$ and $t$.
+\subsection*{b.}
+Let $F$ be the solution the algorithm return, we denote:
+\begin{align*}
+	F= F_1 \cup F_2
+\end{align*}
+Where $F_1$ are the set of edges which have been deleting in the while loop (refer as \textbf{first step}), and $F_2$ the set of edges deleting after (refer as \textbf{second step}). Denote $F_{OPT}$ the optimal solution. We want to show:
+\begin{align*}
+|F| \le 2|V|^{\frac{2}{3}} \cdot |F_{OPT}|
+\end{align*}
+In the first step we deleted edges in paths, denote those $k$ paths:
+\begin{align*}
+F_1 = \{p_1,p_2,\ldots , p_k\}
+\end{align*}
+Denote that two different paths in $F_1$ are disjoint, as we delete all the edges of one before choosing the next path. Each path $p_i$ has to intersect with at least one edge of $F_{OPT}$, as if this is not the case we will have a path smaller than $L$ still in $G$ after deleting $F_{OPT}$ and contradiction to $F_{OPT}$ being a legal solution. As the while loop goes on up to length $|V|^{\frac{2}{3}} $ we are sure $p_i\le |V|^{\frac{2}{3}} $ for all $1\le i \le k$. Summaries it up:
+\begin{align*}
+|F_1| = \sum_{i=1}^k |p_i| \le k \cdot |V|^{\frac{2}{3}} \le |F_{OPT}| \cdot |V|^{\frac{2}{3}} 
+\end{align*}
+If $L\le |V|^{\frac{2}{3}} $ we will not do step 2, and thus $|F_2|=0$, and $|F|=|F_1|$ is a legal solution which will achieve:
+\begin{align*}
+|F| = |F_1| \le |F_{OPT}|\cdot |V|^{\frac{2}{3}} 
+\end{align*}  
+Otherwise, $L> |V|^{\frac{2}{3}} $ so we do step 2, and by the last bound we showed in [2a] we know:
+\begin{align*}
+|F_2| \le \frac{|V|^2 }{(|V|^{\frac{2}{3}} )^2} = |V|^{\frac{2}{3}} 
+\end{align*} 
+And we got, 
+\begin{align*}
+&|F| = |F_1|+|F_2| \le |F_{OPT}|\cdot |V|^{\frac{2}{3}} + |V|^{\frac{2}{3}} = \\
+&|V|^{\frac{2}{3}} (|F_{OPT}+1)\le |V|^{\frac{2}{3}} (|F_{OPT}+|F_{OPT}|)= 2|V|^{\frac{2}{3}} \cdot |F_{OPT}|  
+\end{align*} 
+As in order to arrive to step 2, it has to be that $ |F_{OPT}| \ge 1$. By [2a] we sure that deleting $F$ will have no longer path between $s$ and $t$ so $F$ is legal solution, which achieve the desired approximation ratio.
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
